@@ -4,7 +4,7 @@ import {Panel} from 'primereact/panel';
 import {DataView, DataViewLayoutOptions} from "primereact/dataview";
 import {Button} from "primereact/button";
 import {Dropdown} from "primereact/dropdown";
-import {CarService, getCarsLarge} from "./CarService";
+import {getClientsFromFile, getClientsFromNetwork} from "./ClientService";
 
 export class ClientView extends Component {
 
@@ -23,7 +23,9 @@ export class ClientView extends Component {
     }
 
     componentDidMount() {
-        getCarsLarge().then(data => this.setState({clients: data}));
+        getClientsFromFile().then(data => {
+            this.setState((prevState) => ({clients: data}));
+        });
     }
 
     onSortChange(event) {
@@ -51,11 +53,11 @@ export class ClientView extends Component {
                 <div className="p-grid">
                     <div className="p-col-12 p-md-3">
                         <img src={`https://pp.userapi.com/c637220/v637220434/3d64f/9mXTM1KcI80.jpg`}
-                             alt={client.brand}/>
+                             alt={client.name}/>
                     </div>
                     <div className="p-col-12 p-md-8 car-data">
-                        <div>Vin: <b>{client.vin}</b></div>
-                        <div>Year: <b>{client.year}</b></div>
+                        <div>Name: <b>{client.name}</b></div>
+                        <div>Description: <b>{client.description}</b></div>
                     </div>
 
                     <div className="p-col-12 p-md-1 search-icon" style={{marginTop:'40px'}}>
@@ -69,10 +71,10 @@ export class ClientView extends Component {
     renderGridItem(client) {
         return (
             <div style={{ padding: '.5em' }} className="p-col-12 p-md-3">
-                <Panel header={client.vin} style={{ textAlign: 'center' }}>
+                <Panel header={client.name} style={{ textAlign: 'center' }}>
                     <img src={`https://pp.userapi.com/c637220/v637220434/3d64f/9mXTM1KcI80.jpg`}
-                         alt={client.brand} />
-                    <div className="car-detail">{client.year} - {client.color}</div>
+                         alt={client.name} />
+                    <div className="car-detail">{client.name}</div>
                     <hr className="ui-widget-content" style={{ borderTop: 0 }} />
                     <Button icon="pi pi-search" onClick={(e) => this.setState({ selectedClient: client, visible: true })}/>
                 </Panel>
@@ -84,9 +86,9 @@ export class ClientView extends Component {
         if (!client) {
             return;
         }
-
-        if (layout === 'list')
+        if (layout === 'list'){
             return this.renderListItem(client);
+        }
         else if (layout === 'grid')
             return this.renderGridItem(client);
     }
@@ -97,14 +99,12 @@ export class ClientView extends Component {
                 <div className="p-grid" style={{fontSize: '16px', textAlign: 'center', padding: '20px'}}>
                     <div className="p-col-12" style={{textAlign: 'center'}}>
                         <img src={`https://pp.userapi.com/c637220/v637220434/3d64f/9mXTM1KcI80.jpg`}
-                             alt={this.state.selectedClient.brand} />
+                             alt={this.state.selectedClient.name} />
                     </div>
 
-                    <div className="p-col-4">Vin: </div>
-                    <div className="p-col-8">{this.state.selectedClient.vin}</div>
+                    <div className="p-col-12">{this.state.selectedClient.name}</div>
 
-                    <div className="p-col-4">Year: </div>
-                    <div className="p-col-8">{this.state.selectedClient.year}</div>
+                    <div className="p-col-12">{this.state.selectedClient.description}</div>
                 </div>
             );
         }
@@ -143,10 +143,23 @@ export class ClientView extends Component {
                     </div>
                 </div>
 
+
                 <div className="content-section implementation dataview-demo">
-                    <DataView value={this.state.clients} layout={this.state.layout} header={header}
-                              itemTemplate={this.itemTemplate} paginatorPosition={'both'} paginator={true} rows={20}
-                              sortOrder={this.state.sortOrder} sortField={this.state.sortField} />
+                    {
+                        (Array.isArray(this.state.clients) && this.state.clients.length)
+                            ? (
+                                <DataView value={this.state.clients}
+                                          layout={this.state.layout}
+                                          header={header} itemTemplate={this.itemTemplate}
+                                          paginatorPosition={'both'}
+                                          paginator={true} rows={5}
+                                          sortOrder={this.state.sortOrder}
+                                          sortField={this.state.sortField} />
+                            ) : (
+                                <div>Loading...</div>
+                            )
+                    }
+
 
                     <Dialog header="Client Details" visible={this.state.visible} width="225px" modal={true} onHide={() => this.setState({visible: false})}>
                         {this.renderClientDialogContent()}

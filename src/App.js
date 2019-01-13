@@ -7,6 +7,7 @@ import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import {ClientView} from "./components/dataview";
+import {Greeting} from "./components/greeting";
 
 class App extends Component {
 

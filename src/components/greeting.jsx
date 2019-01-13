@@ -25,7 +25,7 @@ export class Greeting extends Component {
                         ? (
                             <ul>
                                 {this.state.items.map(item => (
-                                    <li key={item.id}>Name: {item.name} Description: {item.description}</li>
+                                    <li key={item.id}>Name: {item.name} Description: {item.description} Id Vkontacte: {item.id_vk}</li>
                                 ))}
                             </ul>
                         ) : (
