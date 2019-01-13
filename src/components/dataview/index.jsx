@@ -4,27 +4,26 @@ import {Panel} from 'primereact/panel';
 import {DataView, DataViewLayoutOptions} from "primereact/dataview";
 import {Button} from "primereact/button";
 import {Dropdown} from "primereact/dropdown";
-import {CarService} from "./CarService";
+import {CarService, getCarsLarge} from "./CarService";
 
 export class ClientView extends Component {
 
     constructor() {
         super();
         this.state = {
-            cars: [],
+            clients: [],
             layout: 'list',
-            selectedCar: null,
+            selectedClient: null,
             visible: false,
             sortKey: null,
             sortOrder: null
         };
-        this.carservice = new CarService();
         this.itemTemplate = this.itemTemplate.bind(this);
         this.onSortChange = this.onSortChange.bind(this);
     }
 
     componentDidMount() {
-        this.carservice.getCarsLarge().then(data => this.setState({cars: data}));
+        getCarsLarge().then(data => this.setState({clients: data}));
     }
 
     onSortChange(event) {
@@ -46,71 +45,66 @@ export class ClientView extends Component {
         }
     }
 
-    renderListItem(car) {
+    renderListItem(client) {
         return (
             <div className="p-col-12 car-details" style={{padding: '2em', borderBottom: '1px solid #d9d9d9'}}>
                 <div className="p-grid">
                     <div className="p-col-12 p-md-3">
-                        <img src={`demo/images/car/${car.brand}.png`} alt={car.brand}/>
+                        <img src={`https://pp.userapi.com/c637220/v637220434/3d64f/9mXTM1KcI80.jpg`}
+                             alt={client.brand}/>
                     </div>
                     <div className="p-col-12 p-md-8 car-data">
-                        <div>Vin: <b>{car.vin}</b></div>
-                        <div>Year: <b>{car.year}</b></div>
-                        <div>Brand: <b>{car.brand}</b></div>
-                        <div>Color: <b>{car.color}</b></div>
+                        <div>Vin: <b>{client.vin}</b></div>
+                        <div>Year: <b>{client.year}</b></div>
                     </div>
 
                     <div className="p-col-12 p-md-1 search-icon" style={{marginTop:'40px'}}>
-                        <Button icon="pi pi-search" onClick={(e) => this.setState({ selectedCar: car, visible: true })}></Button>
+                        <Button icon="pi pi-search" onClick={(e) => this.setState({ selectedClient: client, visible: true })}/>
                     </div>
                 </div>
             </div>
         );
     }
 
-    renderGridItem(car) {
+    renderGridItem(client) {
         return (
             <div style={{ padding: '.5em' }} className="p-col-12 p-md-3">
-                <Panel header={car.vin} style={{ textAlign: 'center' }}>
-                    <img src={`demo/images/car/${car.brand}.png`} alt={car.brand} />
-                    <div className="car-detail">{car.year} - {car.color}</div>
+                <Panel header={client.vin} style={{ textAlign: 'center' }}>
+                    <img src={`https://pp.userapi.com/c637220/v637220434/3d64f/9mXTM1KcI80.jpg`}
+                         alt={client.brand} />
+                    <div className="car-detail">{client.year} - {client.color}</div>
                     <hr className="ui-widget-content" style={{ borderTop: 0 }} />
-                    <Button icon="pi pi-search" onClick={(e) => this.setState({ selectedCar: car, visible: true })}></Button>
+                    <Button icon="pi pi-search" onClick={(e) => this.setState({ selectedClient: client, visible: true })}/>
                 </Panel>
             </div>
         );
     }
 
-    itemTemplate(car, layout) {
-        if (!car) {
+    itemTemplate(client, layout) {
+        if (!client) {
             return;
         }
 
         if (layout === 'list')
-            return this.renderListItem(car);
+            return this.renderListItem(client);
         else if (layout === 'grid')
-            return this.renderGridItem(car);
+            return this.renderGridItem(client);
     }
 
-    renderCarDialogContent() {
-        if (this.state.selectedCar) {
+    renderClientDialogContent() {
+        if (this.state.selectedClient) {
             return (
                 <div className="p-grid" style={{fontSize: '16px', textAlign: 'center', padding: '20px'}}>
                     <div className="p-col-12" style={{textAlign: 'center'}}>
-                        <img src={`demo/images/car/${this.state.selectedCar.brand}.png`} alt={this.state.selectedCar.brand} />
+                        <img src={`https://pp.userapi.com/c637220/v637220434/3d64f/9mXTM1KcI80.jpg`}
+                             alt={this.state.selectedClient.brand} />
                     </div>
 
                     <div className="p-col-4">Vin: </div>
-                    <div className="p-col-8">{this.state.selectedCar.vin}</div>
+                    <div className="p-col-8">{this.state.selectedClient.vin}</div>
 
                     <div className="p-col-4">Year: </div>
-                    <div className="p-col-8">{this.state.selectedCar.year}</div>
-
-                    <div className="p-col-4">Brand: </div>
-                    <div className="p-col-8">{this.state.selectedCar.brand}</div>
-
-                    <div className="p-col-4">Color: </div>
-                    <div className="p-col-8">{this.state.selectedCar.color}</div>
+                    <div className="p-col-8">{this.state.selectedClient.year}</div>
                 </div>
             );
         }
@@ -150,12 +144,12 @@ export class ClientView extends Component {
                 </div>
 
                 <div className="content-section implementation dataview-demo">
-                    <DataView value={this.state.cars} layout={this.state.layout} header={header}
+                    <DataView value={this.state.clients} layout={this.state.layout} header={header}
                               itemTemplate={this.itemTemplate} paginatorPosition={'both'} paginator={true} rows={20}
                               sortOrder={this.state.sortOrder} sortField={this.state.sortField} />
 
-                    <Dialog header="Car Details" visible={this.state.visible} width="225px" modal={true} onHide={() => this.setState({visible: false})}>
-                        {this.renderCarDialogContent()}
+                    <Dialog header="Client Details" visible={this.state.visible} width="225px" modal={true} onHide={() => this.setState({visible: false})}>
+                        {this.renderClientDialogContent()}
                     </Dialog>
                 </div>
             </div>
