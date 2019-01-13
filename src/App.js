@@ -5,6 +5,7 @@ import './App.css';
 import 'primereact/resources/themes/nova-light/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import 'primeflex/primeflex.css';
 import {ClientView} from "./components/dataview";
 
 class App extends Component {
