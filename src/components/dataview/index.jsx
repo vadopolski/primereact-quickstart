@@ -4,7 +4,7 @@ import {Panel} from 'primereact/panel';
 import {DataView, DataViewLayoutOptions} from "primereact/dataview";
 import {Button} from "primereact/button";
 import {Dropdown} from "primereact/dropdown";
-import {getClientsFromFile, getClientsFromNetwork} from "./ClientService";
+import {getClientsFromNetwork} from "./ClientService";
 
 export class ClientView extends Component {
 
@@ -23,7 +23,7 @@ export class ClientView extends Component {
     }
 
     componentDidMount() {
-        getClientsFromFile().then(data => {
+        getClientsFromNetwork().then(data => {
             this.setState((prevState) => ({clients: data}));
         });
     }
@@ -52,7 +52,7 @@ export class ClientView extends Component {
             <div className="p-col-12 car-details" style={{padding: '2em', borderBottom: '1px solid #d9d9d9'}}>
                 <div className="p-grid">
                     <div className="p-col-12 p-md-3">
-                        <img src={`https://pp.userapi.com/c637220/v637220434/3d64f/9mXTM1KcI80.jpg`}
+                        <img src={client.smallPhotoLink}
                              alt={client.name}/>
                     </div>
                     <div className="p-col-12 p-md-8 car-data">
@@ -72,7 +72,7 @@ export class ClientView extends Component {
         return (
             <div style={{ padding: '.5em' }} className="p-col-12 p-md-3">
                 <Panel header={client.name} style={{ textAlign: 'center' }}>
-                    <img src={`https://pp.userapi.com/c637220/v637220434/3d64f/9mXTM1KcI80.jpg`}
+                    <img src={client.smallPhotoLink}
                          alt={client.name} />
                     <div className="car-detail">{client.name}</div>
                     <hr className="ui-widget-content" style={{ borderTop: 0 }} />
@@ -97,8 +97,8 @@ export class ClientView extends Component {
         if (this.state.selectedClient) {
             return (
                 <div className="p-grid" style={{fontSize: '16px', textAlign: 'center', padding: '20px'}}>
-                    <div className="p-col-12" style={{textAlign: 'center'}}>
-                        <img src={`https://pp.userapi.com/c637220/v637220434/3d64f/9mXTM1KcI80.jpg`}
+                    <div className="p-col-36" style={{textAlign: 'center'}}>
+                        <img src={this.state.selectedClient.bigPhotoLink}
                              alt={this.state.selectedClient.name} />
                     </div>
 
@@ -115,9 +115,9 @@ export class ClientView extends Component {
 
     renderHeader() {
         const sortOptions = [
-            {label: 'Newest First', value: '!year'},
-            {label: 'Oldest First', value: 'year'},
-            {label: 'Brand', value: 'brand'}
+            {label: 'Name desc', value: '!name'},
+            {label: 'Name Asc', value: 'name'},
+            {label: 'Rating', value: 'id'}
         ];
 
         return (
@@ -161,7 +161,7 @@ export class ClientView extends Component {
                     }
 
 
-                    <Dialog header="Client Details" visible={this.state.visible} width="225px" modal={true} onHide={() => this.setState({visible: false})}>
+                    <Dialog header="Client Details" visible={this.state.visible} width="650px" modal={true} onHide={() => this.setState({visible: false})}>
                         {this.renderClientDialogContent()}
                     </Dialog>
                 </div>
