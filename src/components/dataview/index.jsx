@@ -4,7 +4,9 @@ import {Panel} from 'primereact/panel';
 import {DataView, DataViewLayoutOptions} from "primereact/dataview";
 import {Button} from "primereact/button";
 import {Dropdown} from "primereact/dropdown";
-import {getClientsFromNetwork} from "./ClientService";
+import {getClientsFromFile, getClientsFromNetwork} from "../utils/client_service";
+import HeaderLine from "../header/header_line";
+import HeaderContent from "../header/header_content";
 
 export class ClientView extends Component {
 
@@ -23,7 +25,7 @@ export class ClientView extends Component {
     }
 
     componentDidMount() {
-        getClientsFromNetwork().then(data => {
+        getClientsFromFile().then(data => {
             this.setState((prevState) => ({clients: data}));
         });
     }
@@ -49,13 +51,13 @@ export class ClientView extends Component {
 
     renderListItem(client) {
         return (
-            <div className="p-col-12 car-details" style={{padding: '2em', borderBottom: '1px solid #d9d9d9'}}>
+            <div className="p-col-12 client-details" style={{padding: '2em', borderBottom: '1px solid #d9d9d9'}}>
                 <div className="p-grid">
                     <div className="p-col-12 p-md-3">
                         <img src={client.smallPhotoLink}
                              alt={client.name}/>
                     </div>
-                    <div className="p-col-12 p-md-8 car-data">
+                    <div className="p-col-12 p-md-8 client-data">
                         <div>Name: <b>{client.name}</b></div>
                         <div>Description: <b>{client.description}</b></div>
                     </div>
@@ -74,9 +76,10 @@ export class ClientView extends Component {
                 <Panel header={client.name} style={{ textAlign: 'center' }}>
                     <img src={client.smallPhotoLink}
                          alt={client.name} />
-                    <div className="car-detail">{client.name}</div>
+                    <div className="client-detail">{client.name}</div>
                     <hr className="ui-widget-content" style={{ borderTop: 0 }} />
-                    <Button icon="pi pi-search" onClick={(e) => this.setState({ selectedClient: client, visible: true })}/>
+                    <Button icon="pi pi-search"
+                            onClick={(e) => this.setState({ selectedClient: client, visible: true })}/>
                 </Panel>
             </div>
         );
@@ -123,34 +126,35 @@ export class ClientView extends Component {
         return (
             <div className="p-grid">
                 <div className="p-col-6" style={{textAlign: 'left'}}>
-                    <Dropdown options={sortOptions} value={this.state.sortKey} placeholder="Sort By" onChange={this.onSortChange} />
+                    <Dropdown options={sortOptions} value={this.state.sortKey}
+                              placeholder="Sort By" onChange={this.onSortChange} />
                 </div>
                 <div className="p-col-6" style={{textAlign: 'right'}}>
-                    <DataViewLayoutOptions layout={this.state.layout} onChange={(e) => this.setState({layout: e.value})} />
+                    <DataViewLayoutOptions layout={this.state.layout}
+                                           onChange={(e) => this.setState({layout: e.value})} />
                 </div>
             </div>
         );
     }
 
     render() {
-        const header = this.renderHeader();
+        const pageHeader = this.renderHeader();
 
         return (
-            <div>
-                <div className="content-section introduction">
-                    <div className="feature-intro">
-                        <h2>Clients</h2>
-                    </div>
-                </div>
+            <div className="layout-wrapper">
+                <HeaderLine
+                    headerName={'Clients'}
+                    tagName={'2'}
+                    className={'content-section introduction'}
+                />
 
-
-                <div className="content-section implementation dataview-demo">
+                <div className="content-section">
                     {
                         (Array.isArray(this.state.clients) && this.state.clients.length)
                             ? (
                                 <DataView value={this.state.clients}
                                           layout={this.state.layout}
-                                          header={header} itemTemplate={this.itemTemplate}
+                                          header={pageHeader} itemTemplate={this.itemTemplate}
                                           paginatorPosition={'both'}
                                           paginator={true} rows={5}
                                           sortOrder={this.state.sortOrder}
@@ -160,8 +164,10 @@ export class ClientView extends Component {
                             )
                     }
 
-
-                    <Dialog header="Client Details" visible={this.state.visible} width="650px" modal={true} onHide={() => this.setState({visible: false})}>
+                    <Dialog header="Client Details"
+                            visible={this.state.visible}
+                            width="650px" modal={true}
+                            onHide={() => this.setState({visible: false})}>
                         {this.renderClientDialogContent()}
                     </Dialog>
                 </div>

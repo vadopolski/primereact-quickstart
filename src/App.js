@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
-import {Button} from 'primereact/button';
-import logo from './logo.png';
 import './App.css';
 import 'primereact/resources/themes/nova-light/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import {ClientView} from "./components/dataview";
-import {Greeting} from "./components/greeting";
+import HeaderLine from "./components/header/header_line";
 
 class App extends Component {
 
@@ -24,14 +22,12 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <div className="App-header">
-                    <h1>Mne Idet Project</h1>
-                </div>
-                <div className="layout-wrapper">
-                    <div id="layout-content">
-                        <ClientView/>
-                    </div>
-                </div>
+                <HeaderLine
+                    projectName={'Mne Idet Project'}
+                    tagName={'1'}
+                    className={'App-header'}
+                />
+                <ClientView/>
             </div>
         );
     }

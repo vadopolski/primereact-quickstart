@@ -9,7 +9,7 @@ export const getClientsFromNetwork = () => {
         };
 
 export const getClientsFromFile = () => {
-    return axios.get('/data/cars-large.json')
+    return axios.get('/data/clients.json')
         .then(res => {
             const client = res.data.data;
             return client;
