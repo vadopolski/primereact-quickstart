@@ -3,10 +3,9 @@ import {Dialog} from 'primereact/dialog';
 import {Panel} from 'primereact/panel';
 import {DataView, DataViewLayoutOptions} from "primereact/dataview";
 import {Button} from "primereact/button";
-import {Dropdown} from "primereact/dropdown";
 import {getClientsFromFile, getClientsFromNetwork} from "../utils/client_service";
 import HeaderLine from "../header/header_line";
-import HeaderContent from "../header/header_content";
+import {getHeaderContent} from "../header/header_content";
 
 export class ClientView extends Component {
 
@@ -116,29 +115,19 @@ export class ClientView extends Component {
         }
     }
 
-    renderHeader() {
-        const sortOptions = [
-            {label: 'Name desc', value: '!name'},
-            {label: 'Name Asc', value: 'name'},
-            {label: 'Rating', value: 'id'}
-        ];
-
-        return (
-            <div className="p-grid">
-                <div className="p-col-6" style={{textAlign: 'left'}}>
-                    <Dropdown options={sortOptions} value={this.state.sortKey}
-                              placeholder="Sort By" onChange={this.onSortChange} />
-                </div>
-                <div className="p-col-6" style={{textAlign: 'right'}}>
-                    <DataViewLayoutOptions layout={this.state.layout}
-                                           onChange={(e) => this.setState({layout: e.value})} />
-                </div>
-            </div>
-        );
-    }
-
     render() {
-        const pageHeader = this.renderHeader();
+        const sortFields = ['!name', 'name', 'id'];
+
+        const pageHeader = getHeaderContent(
+            {
+                dropDownValue: this.state.sortKey,
+                sortFields: sortFields,
+                sortKey: this.state.sortKey,
+                onSortChange: this.onSortChange,
+                layout: this.state.layout,
+                layoutChange: (e) => this.setState({layout: e.value}),
+            }
+        );
 
         return (
             <div className="layout-wrapper">
@@ -154,7 +143,8 @@ export class ClientView extends Component {
                             ? (
                                 <DataView value={this.state.clients}
                                           layout={this.state.layout}
-                                          header={pageHeader} itemTemplate={this.itemTemplate}
+                                          header={pageHeader}
+                                          itemTemplate={this.itemTemplate}
                                           paginatorPosition={'both'}
                                           paginator={true} rows={5}
                                           sortOrder={this.state.sortOrder}
