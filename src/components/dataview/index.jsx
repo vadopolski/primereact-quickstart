@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
-import {Dialog} from 'primereact/dialog';
-import {Panel} from 'primereact/panel';
-import {DataView, DataViewLayoutOptions} from "primereact/dataview";
-import {Button} from "primereact/button";
+
+import {DataView} from "primereact/dataview";
 import {getClientsFromFile, getClientsFromNetwork} from "../utils/client_service";
 import HeaderLine from "../header/header_line";
 import {getHeaderContent} from "../header/header_content";
+import {Dialog} from "primereact/components/dialog/Dialog";
+import {generateListItem} from "./list_item";
+import {generateDialogItem} from "./dialog_item";
+import {generateGridItem} from "./grid_item";
+
 
 export class ClientView extends Component {
 
@@ -48,71 +51,15 @@ export class ClientView extends Component {
         }
     }
 
-    renderListItem(client) {
-        return (
-            <div className="p-col-12 client-details" style={{padding: '2em', borderBottom: '1px solid #d9d9d9'}}>
-                <div className="p-grid">
-                    <div className="p-col-12 p-md-3">
-                        <img src={client.smallPhotoLink}
-                             alt={client.name}/>
-                    </div>
-                    <div className="p-col-12 p-md-8 client-data">
-                        <div>Name: <b>{client.name}</b></div>
-                        <div>Description: <b>{client.description}</b></div>
-                    </div>
-
-                    <div className="p-col-12 p-md-1 search-icon" style={{marginTop:'40px'}}>
-                        <Button icon="pi pi-search" onClick={(e) => this.setState({ selectedClient: client, visible: true })}/>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    renderGridItem(client) {
-        return (
-            <div style={{ padding: '.5em' }} className="p-col-12 p-md-3">
-                <Panel header={client.name} style={{ textAlign: 'center' }}>
-                    <img src={client.smallPhotoLink}
-                         alt={client.name} />
-                    <div className="client-detail">{client.name}</div>
-                    <hr className="ui-widget-content" style={{ borderTop: 0 }} />
-                    <Button icon="pi pi-search"
-                            onClick={(e) => this.setState({ selectedClient: client, visible: true })}/>
-                </Panel>
-            </div>
-        );
-    }
-
     itemTemplate(client, layout) {
         if (!client) {
             return;
         }
         if (layout === 'list'){
-            return this.renderListItem(client);
+            return generateListItem(client, (e) => this.setState({ selectedClient: client, visible: true }));
         }
         else if (layout === 'grid')
-            return this.renderGridItem(client);
-    }
-
-    renderClientDialogContent() {
-        if (this.state.selectedClient) {
-            return (
-                <div className="p-grid" style={{fontSize: '16px', textAlign: 'center', padding: '20px'}}>
-                    <div className="p-col-36" style={{textAlign: 'center'}}>
-                        <img src={this.state.selectedClient.bigPhotoLink}
-                             alt={this.state.selectedClient.name} />
-                    </div>
-
-                    <div className="p-col-12">{this.state.selectedClient.name}</div>
-
-                    <div className="p-col-12">{this.state.selectedClient.description}</div>
-                </div>
-            );
-        }
-        else {
-            return null;
-        }
+            return generateGridItem(client, (e) => this.setState({ selectedClient: client, visible: true }));
     }
 
     render() {
@@ -146,7 +93,7 @@ export class ClientView extends Component {
                                           header={pageHeader}
                                           itemTemplate={this.itemTemplate}
                                           paginatorPosition={'both'}
-                                          paginator={true} rows={5}
+                                          paginator={true} rows={8}
                                           sortOrder={this.state.sortOrder}
                                           sortField={this.state.sortField} />
                             ) : (
@@ -155,10 +102,11 @@ export class ClientView extends Component {
                     }
 
                     <Dialog header="Client Details"
+                            contentStyle={{ maxHeight: "800px" }}
                             visible={this.state.visible}
-                            width="650px" modal={true}
+                            modal={true}
                             onHide={() => this.setState({visible: false})}>
-                        {this.renderClientDialogContent()}
+                        {generateDialogItem(this.state.selectedClient)}
                     </Dialog>
                 </div>
             </div>

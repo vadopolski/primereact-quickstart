@@ -10,17 +10,15 @@ const generateSortOptions = (sortFields) => {
     return result;
 };
 
-export const getHeaderContent = (props) => {
-    return (
-        <div className="p-grid">
-            <div className="p-col-6" style={{textAlign: 'left'}}>
-                <Dropdown options={generateSortOptions(props.sortFields)} value={props.sortKey}
-                          placeholder="Sort By" onChange={props.onSortChange}/>
-            </div>
-            <div className="p-col-6" style={{textAlign: 'right'}}>
-                <DataViewLayoutOptions layout={props.layout}
-                                       onChange={props.layoutChange}/>
-            </div>
+export const getHeaderContent = (props) => (
+    <div className="p-grid">
+        <div className="p-col-6" style={{textAlign: 'left'}}>
+            <Dropdown options={generateSortOptions(props.sortFields)} value={props.sortKey}
+                      placeholder="Sort By" onChange={props.onSortChange}/>
         </div>
-    );
-};
+        <div className="p-col-6" style={{textAlign: 'right'}}>
+            <DataViewLayoutOptions layout={props.layout}
+                                   onChange={props.layoutChange}/>
+        </div>
+    </div>
+);

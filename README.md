@@ -1,3 +1,4 @@
-To install start react user interface:
+Installing and starting:
 npm install
+npm install axios
 npm start
